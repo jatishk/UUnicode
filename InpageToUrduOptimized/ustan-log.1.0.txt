@@ -1,0 +1,2 @@
+Jan 15, 2015 9:01:06 PM logic.gui.BuildGUI actionPerformed
+INFO: Text conversion is done in 780 ms.

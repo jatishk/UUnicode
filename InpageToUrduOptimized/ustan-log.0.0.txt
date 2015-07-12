@@ -1,0 +1,38 @@
+Jan 14, 2015 12:05:44 AM logic.gui.BuildGUI initComponents
+SEVERE: null
+Jan 15, 2015 12:50:56 AM logic.gui.BuildGUI actionPerformed
+INFO: Text conversion is done in 1421263256420 ms.
+Jan 15, 2015 12:50:58 AM logic.gui.BuildGUI actionPerformed
+INFO: Text conversion is done in 811 ms.
+Jan 15, 2015 12:51:11 AM logic.gui.BuildGUI actionPerformed
+INFO: Text conversion is done in 999 ms.
+Jan 31, 2015 6:30:20 PM logic.gui.BuildGUI actionPerformed
+INFO: Text conversion is done in 1467 ms.
+Jan 31, 2015 6:36:28 PM logic.gui.BuildGUI actionPerformed
+INFO: Text conversion is done in 1092 ms.
+Jan 31, 2015 6:37:22 PM logic.gui.BuildGUI actionPerformed
+INFO: Text conversion is done in 1014 ms.
+Jan 31, 2015 6:39:08 PM logic.gui.BuildGUI actionPerformed
+INFO: Text conversion is done in 1092 ms.
+Jan 31, 2015 6:40:10 PM logic.gui.BuildGUI actionPerformed
+INFO: Text conversion is done in 983 ms.
+Jan 31, 2015 6:40:45 PM logic.gui.BuildGUI actionPerformed
+INFO: Text conversion is done in 1061 ms.
+Jan 31, 2015 6:42:11 PM logic.gui.BuildGUI actionPerformed
+INFO: Text conversion is done in 1076 ms.
+Jan 31, 2015 6:43:00 PM logic.gui.BuildGUI actionPerformed
+INFO: Text conversion is done in 1217 ms.
+Jan 31, 2015 6:46:52 PM logic.gui.BuildGUI actionPerformed
+INFO: Text conversion is done in 1108 ms.
+Jan 31, 2015 6:49:25 PM logic.gui.BuildGUI actionPerformed
+INFO: Text conversion is done in 983 ms.
+Jan 31, 2015 6:52:49 PM logic.gui.BuildGUI actionPerformed
+INFO: Text conversion is done in 1107 ms.
+Jan 31, 2015 7:04:48 PM logic.gui.BuildGUI actionPerformed
+INFO: Text conversion is done in 1123 ms.
+Jan 31, 2015 7:08:04 PM logic.gui.BuildGUI actionPerformed
+INFO: Text conversion is done in 1092 ms.
+Jan 31, 2015 7:12:59 PM logic.gui.BuildGUI actionPerformed
+INFO: Text conversion is done in 1139 ms.
+Jan 31, 2015 7:16:13 PM logic.gui.BuildGUI actionPerformed
+INFO: Text conversion is done in 1092 ms.
