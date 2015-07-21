@@ -9,22 +9,21 @@
 package logic.translate;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.LinkedHashMap;
 
-import logic.instantiate.DBMapLoad;
+import logic.loader.DBMapLoad;
 
-public class InputParser {
+public class ConversionOnline {
 
 	// Variable Declaration Start -do not modify
 
-	private static InputParser inputParser;
+	private static ConversionOnline inputParser;
 
 	// End of Variable Declaration
 
 	//Restricts class initialization from external sources
-	private InputParser() throws IOException, URISyntaxException {
-		DBMapLoad.prepareDictionary();
+	private ConversionOnline() {
+		
 	}
 
 	/*
@@ -144,13 +143,13 @@ public class InputParser {
 			}
 			parsedText.append(currentChar);
 		}
-
+		tempArray = null;
 		// Returning the converted text
 		return parsedText.reverse().toString();
 	}
 
-	//Factory method to load the static dictionary onces
-	public static InputParser getInstance() throws IOException, URISyntaxException {
-		return inputParser!=null?inputParser:(new InputParser());
+	//Initialize static dictionary 
+	public static ConversionOnline getInstance() throws IOException {
+		return ( inputParser != null ? inputParser : (new ConversionOnline()));
 	}
 }

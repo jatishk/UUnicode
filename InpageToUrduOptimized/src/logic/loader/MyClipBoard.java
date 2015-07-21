@@ -1,4 +1,4 @@
-package logic.gui;
+package logic.loader;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -7,7 +7,8 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import logic.logger.LoggerFormat;
 
 public class MyClipBoard {
 
@@ -40,24 +41,20 @@ public class MyClipBoard {
 		 * check wheather the clipboard contents is string or not
 		 */
 		Transferable contents = clipboard.getContents(null);
-		boolean hasTransferableText = (contents != null)
-				&& contents.isDataFlavorSupported(DataFlavor.stringFlavor);
+		boolean hasTransferableText = (contents != null) && contents.isDataFlavorSupported(DataFlavor.stringFlavor);
 
 		if (hasTransferableText) {
 			try {
 				try {
 					// Type casting of text as well as copying the content's of
 					// string into variable
-					this.setTextOnClipBoard((String) contents
-							.getTransferData(DataFlavor.stringFlavor));
+					this.setTextOnClipBoard((String) contents.getTransferData(DataFlavor.stringFlavor));
 				} catch (IOException ex) {
-					Logger.getLogger(MyClipBoard.class.getName()).log(
-							Level.SEVERE, null, ex);
+					LoggerFormat.getLogger().log(Level.SEVERE, null, ex);
 					throw ex;
 				}
 			} catch (UnsupportedFlavorException ex) {
-				Logger.getLogger(MyClipBoard.class.getName()).log(
-						Level.SEVERE, null, ex);
+				LoggerFormat.getLogger().log(Level.SEVERE, null, ex);
 				throw ex;
 			}
 

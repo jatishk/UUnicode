@@ -20,16 +20,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
 import logic.exception.InvalidDataException;
-import logic.translate.InputParser;
+import logic.exception.InvalidFileToParseException;
+import logic.loader.DBMapLoad;
+import logic.loader.InputFileParser;
+import logic.loader.MyClipBoard;
+import logic.logger.LoggerFormat;
+import logic.translate.ConversionOnline;
 
 /**
  * @author Jatish Khanna
@@ -49,16 +52,14 @@ public class BuildGUI extends javax.swing.JFrame implements ActionListener {
 	private javax.swing.JScrollPane scrollEditor = new javax.swing.JScrollPane();;
 	private javax.swing.JTextPane editor = new javax.swing.JTextPane();
 
-	private static final Font textFont = new Font("Alvi Nastaleeq v1.0.0",
-			Font.PLAIN, 20);
+	private static final Font textFont = new Font("Alvi Nastaleeq v1.0.0", Font.PLAIN, 20);
 
 	long start = 0;
-	private static InputParser textParser = null;
+	private static ConversionOnline textParser = null;
 	private File inpageFile = null;
-	private final static Logger logger = Logger.getLogger(BuildGUI.class
-			.getName());
-	private static FileHandler logHandler;
-	private TextUI textUI = new TextUI();
+	private final static Logger logger = LoggerFormat.getLogger();
+
+	private InputFileParser textUI = new InputFileParser();
 
 	// End Of variable Declaration
 
@@ -67,7 +68,7 @@ public class BuildGUI extends javax.swing.JFrame implements ActionListener {
 	 * 
 	 * @see To Initialize the GUI components using call to initCoponents()method
 	 */
-	public BuildGUI(InputParser inputParser) {
+	public BuildGUI(ConversionOnline inputParser) {
 
 		// Application default close operation
 		setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
@@ -81,109 +82,80 @@ public class BuildGUI extends javax.swing.JFrame implements ActionListener {
 
 	}
 
-	
 	/**
 	 * This method is called from within the constructor to initialize the GUI.
-	 * Initialize-
-	 * 		Logger components
-	 * 		GUI application
-	 * 		Format controls
+	 * Initialize- Logger components GUI application Format controls
 	 */
 
 	public void initComponents() {
 
-		//Initialize logger reference
-		loggerFormat();
+		// Initialize logger reference and configuring it
+		LoggerFormat.loggerFormat();
 		
-		//format all the UI components (width, font...)
+		//Initialize static dictionary 
+		try {
+			DBMapLoad.prepareDictionary();
+		} catch (IOException e1) {
+			logger.log(Level.SEVERE, e1.getMessage());
+		}
+		// format all the UI components (width, font...)
 		formatControls();
 
-
 		/*
-		 * "Group Layout" as arrangement to place components on container 
+		 * "Group Layout" as arrangement to place components on container
 		 * defines how the components have been placed onto container window
 		 */
 
-		javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(
-				getContentPane());
+		javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(mainPanelLayout);
 		mainPanelLayout
-				.setHorizontalGroup(mainPanelLayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								mainPanelLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												mainPanelLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.LEADING)
-														.addGroup(
-																mainPanelLayout
-																		.createSequentialGroup()
-																		.addComponent(
-																				scrollEditor,
-																				javax.swing.GroupLayout.DEFAULT_SIZE,
-																				738,
-																				Short.MAX_VALUE)
-																		.addContainerGap())
-														.addGroup(
-																javax.swing.GroupLayout.Alignment.TRAILING,
-																mainPanelLayout
-																		.createSequentialGroup()
-																		.addComponent(
-																				startConversion)
-																		.addGap(58,
-																				58,
-																				58)
-																		.addComponent(
-																				pasteClipboard)
-																		.addGap(58,
-																				58,
-																				58)
-																		.addComponent(
-																				quitApp)
-																		.addGap(120,
-																				120,
-																				120)
-																		.addComponent(
-																				openButton)
-																		.addGap(120,
-																				120,
-																				120)))));
+				.setHorizontalGroup(
+						mainPanelLayout
+								.createParallelGroup(
+										javax.swing.GroupLayout.Alignment.LEADING)
+								.addGroup(
+										mainPanelLayout.createSequentialGroup().addContainerGap()
+												.addGroup(
+														mainPanelLayout
+																.createParallelGroup(
+																		javax.swing.GroupLayout.Alignment.LEADING)
+																.addGroup(
+																		mainPanelLayout.createSequentialGroup()
+																				.addComponent(scrollEditor,
+																						javax.swing.GroupLayout.DEFAULT_SIZE,
+																						738, Short.MAX_VALUE)
+																				.addContainerGap())
+																.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+																		mainPanelLayout.createSequentialGroup()
+																				.addComponent(startConversion)
+																				.addGap(58, 58, 58)
+																				.addComponent(pasteClipboard)
+																				.addGap(58, 58, 58)
+																				.addComponent(quitApp)
+																				.addGap(120, 120, 120)
+																				.addComponent(openButton)
+																				.addGap(120, 120, 120)))));
 		mainPanelLayout
-				.setVerticalGroup(mainPanelLayout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								mainPanelLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addComponent(
-												scrollEditor,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												370,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addGap(18, 18, 18)
-										.addGroup(
-												mainPanelLayout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(
-																startConversion)
-														.addComponent(
-																pasteClipboard)
-														.addComponent(quitApp)
-														.addComponent(
-																openButton))
-										.addContainerGap(21, Short.MAX_VALUE)));
-		
+				.setVerticalGroup(
+						mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addGroup(
+										mainPanelLayout.createSequentialGroup().addContainerGap()
+												.addComponent(scrollEditor, javax.swing.GroupLayout.PREFERRED_SIZE, 370,
+														javax.swing.GroupLayout.PREFERRED_SIZE)
+												.addGap(18, 18, 18)
+												.addGroup(
+														mainPanelLayout
+																.createParallelGroup(
+																		javax.swing.GroupLayout.Alignment.BASELINE)
+																.addComponent(startConversion)
+																.addComponent(pasteClipboard).addComponent(quitApp)
+																.addComponent(openButton))
+								.addContainerGap(21, Short.MAX_VALUE)));
+
 		/*
-		 * Action Listener event handler for "openButton"
-		 * Listens to the user defined events (mouse click)
-		 * Uses swing components to load file (File Chooser)
-		 * Restriction - only inpage file(*.inp)can be uploaded
+		 * Action Listener event handler for "openButton" Listens to the user
+		 * defined events (mouse click) Uses swing components to load file (File
+		 * Chooser) Restriction - only inpage file(*.inp)can be uploaded
 		 */
 
 		openButton.addActionListener(new ActionListener() {
@@ -195,17 +167,22 @@ public class BuildGUI extends javax.swing.JFrame implements ActionListener {
 					inpageFile = chooser.getSelectedFile();
 					if (inpageFile.getName().endsWith(".inp")) {
 						try {
-							//File is read byte by byte
-							//the return result is stored as String in TextUI class
-							textUI.setEditorOriginalData(TextUI
-									.readFile(inpageFile));
+							// File is read byte by byte
+							// the return result is stored as String in TextUI
+							// class
+							try {
+								textUI.setEditorOriginalData(InputFileParser.readFile(inpageFile));
+							} catch (InvalidFileToParseException e) {
+								logger.log(Level.SEVERE, e.getMessage());
+							}
 						} catch (IOException e) {
 							logger.log(Level.SEVERE, e.getMessage());
 						}
 
 						editor.setText("");
 						editor.setText(textUI.getEditorOriginalData());
-						//Flag defines the Map to be loaded for file (Clip board map[false] or File map[true])
+						// Flag defines the Map to be loaded for file (Clip
+						// board map[false] or File map[true])
 						textUI.setFileFlag(true);
 					}
 				}
@@ -224,10 +201,11 @@ public class BuildGUI extends javax.swing.JFrame implements ActionListener {
 	}
 
 	/*
-	 * actionPerformed method associated to events occurred at Runtime.
-	 * event starConversion  to start the conversion of text present in the clip board
-	 * event pasteClipboard  to get the Clip board contents using clipboard class 
+	 * actionPerformed method associated to events occurred at Runtime. event
+	 * starConversion to start the conversion of text present in the clip board
+	 * event pasteClipboard to get the Clip board contents using clipboard class
 	 * event Event: (exit) to close and terminate application
+	 * 
 	 * @exception InvalidDataException when content length is not valid
 	 */
 	@Override
@@ -239,15 +217,14 @@ public class BuildGUI extends javax.swing.JFrame implements ActionListener {
 			start = System.currentTimeMillis();
 			try {
 
-				
 				if (textUI.getEditorOriginalData().length() < 1)
 					throw new InvalidDataException();
-				
-				textUI.setEditorTranslatedData(textParser.doConversion(
-						textUI.getEditorOriginalData(), textUI.getFileFlag()));
+
+				textUI.setEditorTranslatedData(
+						textParser.doConversion(textUI.getEditorOriginalData(), textUI.getFileFlag()));
 				/*
-				 * refreshing the editor area with Translated content
-				 * reset the value of flag file
+				 * refreshing the editor area with Translated content reset the
+				 * value of flag file
 				 */
 				editor.setText(textUI.getEditorTranslatedData());
 				textUI.setFileFlag(false);
@@ -258,21 +235,20 @@ public class BuildGUI extends javax.swing.JFrame implements ActionListener {
 				 * not logged will be displayed at the console
 				 */
 				logger.log(Level.SEVERE, exception.getMessage());
-			}finally{
-				 long time = System.currentTimeMillis() - start;
-				 logger.log(Level.INFO, "Text conversion is done in "+time+" ms.");
+			} finally {
+				long time = System.currentTimeMillis() - start;
+				logger.log(Level.INFO, "Operation as been completed in " + time + " ms.");
 			}
 
 		} else if (actionEvent.getSource().equals(pasteClipboard)) {
 			/*
-			 * to fetch the contents from clip board 
-			 * verification of plain/text is done 
-			 * Restriction: not other than plain/text will be allowed
+			 * to fetch the contents from clip board verification of plain/text
+			 * is done Restriction: not other than plain/text will be allowed
+			 * 
 			 * @exception from the associated class
 			 */
 			try {
-				textUI.setEditorOriginalData(new MyClipBoard()
-						.getClipboardContents());
+				textUI.setEditorOriginalData(new MyClipBoard().getClipboardContents());
 			} catch (IOException e) {
 				logger.log(Level.SEVERE, e.getMessage());
 			} catch (UnsupportedFlavorException e) {
@@ -282,7 +258,7 @@ public class BuildGUI extends javax.swing.JFrame implements ActionListener {
 			editor.setText(textUI.getEditorOriginalData());
 			textUI.setFileFlag(false);
 		} else {
-			//perform the normal termination as well
+			// perform the normal termination as well
 			// disposing the program.
 			System.exit(0);
 		}
@@ -291,8 +267,8 @@ public class BuildGUI extends javax.swing.JFrame implements ActionListener {
 
 	public void formatControls() {
 		/*
-		 *Components are being initialized
-		 *Associating actionListener to objects
+		 * Components are being initialized Associating actionListener to
+		 * objects
 		 */
 		editor.setToolTipText("Paste your Content to Convert..");
 		editor.setName("ASCII_Editor");
@@ -321,23 +297,6 @@ public class BuildGUI extends javax.swing.JFrame implements ActionListener {
 		if (pasteClipboard.getActionListeners() != null)
 			pasteClipboard.removeActionListener(this);
 		pasteClipboard.addActionListener(this);
-	}
-	
-	/*
-	 *associating the logger FileHandler
-	 *specify the logger formatter
-	 */
-	
-	private static void loggerFormat(){
-		try {
-			logHandler = new FileHandler("ustan-log.%u.%g.txt", true);
-		} catch (SecurityException e2) {
-			logger.log(Level.SEVERE, e2.getMessage());
-		} catch (IOException e2) {
-			logger.log(Level.SEVERE, e2.getMessage());
-		}
-		logger.addHandler(logHandler);
-		logHandler.setFormatter(new SimpleFormatter());
 	}
 
 }

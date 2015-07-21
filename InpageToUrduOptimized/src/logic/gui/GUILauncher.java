@@ -3,16 +3,14 @@
  * and open the template in the editor.
  */
 
-package logic.instantiate;
+package logic.gui;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import logic.gui.BuildGUI;
-import logic.gui.SplashScreen;
-import logic.translate.InputParser;
+import logic.logger.LoggerFormat;
+import logic.translate.ConversionOnline;
 
 /**
  * 
@@ -20,8 +18,8 @@ import logic.translate.InputParser;
  *         Database Type: Local File (database.txt) Application Type: Swing
  * 
  **/
-public class Main {
-	private final static Logger LOGGER = Logger.getLogger(Main.class.getName());
+public class GUILauncher {
+	private final static Logger LOGGER = LoggerFormat.getLogger();
 
 	/**
 	 * @param args
@@ -32,15 +30,11 @@ public class Main {
 		// Splash startup screen method call
 		splashView();
 		try {
-			new BuildGUI(InputParser.getInstance());
+			new BuildGUI(ConversionOnline.getInstance());
 		} catch (IOException e1) {
 			LOGGER.log(Level.SEVERE, "Not able to find file", e1);
 			System.exit(0);
-		} catch (URISyntaxException e) {
-			Logger.getLogger(DBMapLoad.class.getName()).log(Level.SEVERE,
-					"Exception while loading DB file.", e);
-			System.exit(0);
-		}
+		} 
 	}
 
 	private static void splashView() {
@@ -49,8 +43,7 @@ public class Main {
 		try {
 			Thread.sleep(7000);
 		} catch (InterruptedException e) {
-			Logger.getLogger(DBMapLoad.class.getName()).log(Level.SEVERE, null,
-					e);
+			LoggerFormat.getLogger().log(Level.SEVERE, null, e);
 		}
 		s.dispose();
 	}
